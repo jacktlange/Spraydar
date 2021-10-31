@@ -1,0 +1,1 @@
+#TODO: want to be able to load up a users past tick history using the CSV available on the 'ticks' page. This is useless until there is a backend where the data could be stored.
