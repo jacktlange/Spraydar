@@ -1,7 +1,46 @@
 import pandas as pd
 from bs4 import BeautifulSoup
+from flask import session
+import time
+from threading import Thread, Lock
 from urllib.request import urlopen
+import logging
 user_ids = ['112446503', '107923457', '200256288']
+
+mp_user_data = {}
+per_user_locks = {}
+
+class MpUser():
+    def __init__(self, user_id, user_name, ticks):
+        self.user_id = user_id
+        self.user_name = user_name
+        self.ticks = ticks
+
+def fetch_user(user_id, force_fetch=False):
+    if user_id in mp_user_data and not force_fetch:
+        print(f'already fetched {user_id}')
+        return
+    if user_id not in per_user_locks:
+        per_user_locks[user_id] = Lock()
+    lock = per_user_locks[user_id]
+    if lock.locked():
+        # If the lock is not available, there's already a fetch in progress and
+        # we shouldn't duplicate work. However, we don't want to return until
+        # the job is done so we'll spin here.
+        while lock.locked():
+            time.sleep(0.5)
+        return
+    # Otherwise, acquire the lock and #dowork.
+    lock.acquire()
+    user_ticks = user_ticks_to_array(user_id)[:5] #only show 5 most recent ticks per user for development ease
+    user_name = user_id_to_user_name(user_id)
+    mp_user_data[user_id] = MpUser(user_id, user_name, user_ticks)
+    lock.release()
+
+def fetch_user_async(user_id):
+    thread = Thread(target=fetch_user, args=(user_id,))
+    thread.daemon = True
+    thread.start()
 
 def parse_ticks(ticks_url):
     user_ticks = []
@@ -47,10 +86,13 @@ def get_date_from_style(tick_style):
     return date 
 
 
-def knit_ticks_by_date(ticks_by_user):
+def knit_ticks_by_date(users):
     #this operation can probs be vectorized
     ticks_df = None
-    for user, ticks in ticks_by_user.items():
+    for user_id in users:
+        user_data = mp_user_data[user_id]
+        user = user_data.user_name
+        ticks = user_data.ticks
         for tick in ticks:
             tick_date = get_date_from_style(tick['style'])
             tick['date'] = tick_date
@@ -71,7 +113,6 @@ if __name__ == '__main__':
         ticks = user_ticks_to_array(user_id)
         user_name = user_id_to_user_name(user_id)
         user_ticks[user_name] = ticks
-        
 
     knit_ticks = knit_ticks_by_date(user_ticks)
     for tick in knit_ticks:
