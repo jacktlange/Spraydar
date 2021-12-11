@@ -1,6 +1,5 @@
 feedparser
 lxml
-urllib2
 bs4
 flask
 pandas

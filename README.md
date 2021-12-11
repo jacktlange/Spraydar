@@ -6,7 +6,7 @@ Getting started:
 1. install python 3
 2. checkout spraydar repo
 3. create a new virtual environment
-4. pip install requirements.txt
+4. pip install -r requirements.txt
 5. python src/webpage.py to start the local Flask server. (defaults to http://127.0.0.1:5000/ )
 
 Using the app:
