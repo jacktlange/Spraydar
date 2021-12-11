@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Manage Watched Users{% endblock %}
 
+{% set popular = {
+	112446503: "Jack Lange",
+	200256288: "Jack Neus",
+	107923457: "A Bloc",
+	200470232: "Lynn Anderson",
+	200394444: "Suraj Kushwaha",
+} %}
+
 {% block content %}
 <form action="#" method="post">
 	<p>Add a user ID:</p>
 	<input type="hidden" name="action" value="add"/>
-	<p><input type="text" name="usrid" /></p>
+	<p><input id="add-userid" type="text" name="usrid" /></p>
 	<p><input type="submit" value="submit"/></p>
 </form>
 <ul>
@@ -20,4 +28,18 @@
 </li>
 {% endfor %}
 </ul>
+<p>"Popular" Users</p>
+<ul>
+{% for id, name in popular.items() %}
+<li><p style="cursor:pointer" onclick="populateAdd('{{id}}')">{{name}}</p></li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+function populateAdd(user_id) {
+	var elt = document.getElementById("add-userid").value = user_id;
+}
+</script>
 {% endblock %}
