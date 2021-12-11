@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, session
 from datetime import timedelta
 import pprint
 
-from tick_utils import fetch_user, fetch_user_async, knit_ticks_by_date
+from tick_utils import fetch_user, fetch_user_async, get_user_name, knit_ticks_by_date
 
 
 app = Flask(__name__)
@@ -21,19 +21,28 @@ def home():
 
     return render_template("index.html", sorted_ticks=sorted_ticks)
 
-@app.route("/add-user-id", methods=["POST", "GET"])
-def add_user_id():
+@app.route("/manage-users", methods=["POST", "GET"])
+def manage_users():
+    user_ids = session.get('user_ids', [])
+    watched_users = {user_id: get_user_name(user_id) for user_id in user_ids}
+
     if request.method == "POST":
         session.permanent = True
         user_id = request.form["usrid"]
-        if 'user_ids' in session:
-            session["user_ids"].append(user_id) #TODO prevent adding duplicate users
-        else:
-            session['user_ids'] = [user_id]
-        fetch_user_async(user_id)
-        return redirect(url_for("add_user_id")) 
+        action = request.form["action"]
+        if action == "add":
+            if user_id not in user_ids:
+                if 'user_ids' in session:
+                    session["user_ids"].append(user_id)
+                else:
+                    session['user_ids'] = [user_id]
+            fetch_user_async(user_id)
+        if action == "remove":
+            print("removing ", user_id)
+            session['user_ids'].remove(user_id)
+        return redirect(url_for("manage_users")) 
     else:
-        return render_template("adduserid.html")
+        return render_template("manage.html", users=watched_users)
 
 
 

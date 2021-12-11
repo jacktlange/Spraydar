@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Manage Watched Users{% endblock %}
+
+{% block content %}
+<form action="#" method="post">
+	<p>Add a user ID:</p>
+	<input type="hidden" name="action" value="add"/>
+	<p><input type="text" name="usrid" /></p>
+	<p><input type="submit" value="submit"/></p>
+</form>
+<ul>
+{% for id, name in users.items() %}
+<li>
+	<span>{{name}}</span>
+	<form action="#" method="post">
+		<input type="hidden" name="action" value="remove"/>
+		<input type="hidden" name="usrid" value="{{id}}" />
+		<input type="submit" value="Remove"/>
+	</form>
+</li>
+{% endfor %}
+</ul>
+{% endblock %}

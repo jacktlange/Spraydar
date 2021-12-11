@@ -42,6 +42,11 @@ def fetch_user_async(user_id):
     thread.daemon = True
     thread.start()
 
+def get_user_name(user_id):
+    if user_id not in mp_user_data:
+        fetch_user(user_id)
+    return mp_user_data[user_id].user_name
+
 def parse_ticks(ticks_url):
     user_ticks = []
     html = urlopen(ticks_url).read()
