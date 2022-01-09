@@ -5,11 +5,11 @@ import pprint
 from tick_utils import fetch_user, fetch_user_async, get_user_name, knit_ticks_by_date
 
 
-app = Flask(__name__)
-app.secret_key = "secret" #TODO use a real secret
-app.permanent_session_lifetime = timedelta(minutes=5)
+application = Flask(__name__)
+application.secret_key = "secret" #TODO use a real secret
+application.permanent_session_lifetime = timedelta(minutes=5)
 
-@app.route("/")
+@application.route("/")
 def home():
     ticks = {}
     sorted_ticks = []
@@ -21,7 +21,7 @@ def home():
 
     return render_template("index.html", sorted_ticks=sorted_ticks)
 
-@app.route("/manage-users", methods=["POST", "GET"])
+@application.route("/manage-users", methods=["POST", "GET"])
 def manage_users():
     user_ids = session.get('user_ids', [])
     watched_users = {user_id: get_user_name(user_id) for user_id in user_ids}
@@ -47,4 +47,4 @@ def manage_users():
 
 
 if __name__ == "__main__":
-	app.run(debug=True, port=5001, threaded=True)
+	application.run(debug=True, port=5001, threaded=True)
