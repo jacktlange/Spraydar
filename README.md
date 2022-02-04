@@ -14,3 +14,8 @@ Using the app:
 
 Testing changes:
 There is a 'main' block in tick_utils.py that is useful for testing changes to those functions.
+
+
+# Hosted at
+
+http://spraydar-dev.us-west-2.elasticbeanstalk.com
