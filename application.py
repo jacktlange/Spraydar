@@ -11,8 +11,9 @@ application.secret_key = "secret" #TODO use a real secret
 application.permanent_session_lifetime = timedelta(minutes=5)
 
 #configs for auth to the dynamo db
-os.environ['AWS_CONFIG_FILE'] = '~/.aws/config' #Jack N, ask me for the config file so you can run locally
-os.environ['AWS_PROFILE'] = "spraydar-app"
+if  os.environ.get('env') != 'live':
+    os.environ['AWS_CONFIG_FILE'] = '~/.aws/config' #ask me for the config file so you can run locally
+    os.environ['AWS_PROFILE'] = "spraydar-app"
 os.environ['AWS_DEFAULT_REGION'] = "us-west-2"
 
 @application.route("/")
