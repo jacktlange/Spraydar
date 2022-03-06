@@ -14,6 +14,8 @@ application.permanent_session_lifetime = timedelta(minutes=5)
 if  os.environ.get('env') != 'live':
     os.environ['AWS_CONFIG_FILE'] = '~/.aws/config' #ask me for the config file so you can run locally
     os.environ['AWS_PROFILE'] = "spraydar-app"
+# os.environ['AWS_ACCESS_KEY_ID'] = 
+# os.environ['AWS_SECRET_ACCESS_KEY'] = 
 os.environ['AWS_DEFAULT_REGION'] = "us-west-2"
 
 @application.route("/")

@@ -57,7 +57,8 @@ def parse_ticks(ticks_url):
     for route in route_ticks[:-36]: #terrifying magic number - 36 is the number of ticks displayed on a page
         route_name = route.find('strong').text   
         link = (route.find_all('a', href=True,attrs={'class':'text-black route-row'})[0]['href'])
-        grade = route.find(attrs={'class':'rateYDS'}).text
+        grade_html = route.find(attrs={'class':'rateYDS'})
+        grade = grade_html.text if grade_html is not None else 'No grade'
         style = route.find('i').text
         summary = {'name': route_name,
                     'grade': grade,
